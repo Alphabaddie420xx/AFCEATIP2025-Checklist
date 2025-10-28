@@ -92,6 +92,12 @@ add chain=output comment="Section Break" disabled=yes
 # /ip service set ssh disabled=yes   <- nevermind we should probably keep this on enabled so that we can get back in.
 
 
+
+
+https://neuronvm.com/blog/mikrotik-firewall-rules/
+
+
+
 # Additionally, drop incoming by default:
 /ip   firewall filter add   chain=input  action=log log-perfix= "Firewall Drop: " comment = "Log Unmatched" 
 /ip   firewall filter add   chain=input  action=drop comment  = "Drop Everything Else"
