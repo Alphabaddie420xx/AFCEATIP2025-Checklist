@@ -1,0 +1,34 @@
+# Install tripwire -- set passphrase for site key and the local key
+sudo apt install tripwire
+
+#Add the configuration modification change -- switch to that tab and come back
+
+#Add the new custom policy file - add it to /etc/tripwire
+Sudo twadmin --create-polfile --site-keyfile /etc/tripwire/site.key /etc/tripwire/newpolicyfilename.txt
+
+#Adding anything to the policy?
+#Make sure to run this command to update the policy file:
+tripwire --update-policy newpolicyfilename.txt
+
+#Logs stored at
+/var/lib/tripwire/report/[nameoffile].twr
+
+#initialize tripwire + set the baseline
+sudo tripwire -m i
+
+#run a check - just to verify it works
+sudo tripwire -m c
+
+#add a cron job to run a tripwire check every 5 minutes
+Crontab -e
+#Just paste this in crontab
+*/5 * * * * /usr/sbin/tripwire -m c 
+
+
+#Okay then I think thats all!
+
+
+# In case you wanted to update the database:
+tripwire --update --accept-all
+# or you can do
+tripwire -m u
