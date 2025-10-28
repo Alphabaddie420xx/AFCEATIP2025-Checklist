@@ -26,14 +26,17 @@ SEC_TEMPORARY     = +pugt ;
 
 
 # Predefined variables - since i dun wanna write it out every time
-SEC_CRIT = $(SEC_IGNORE_NONE)-SHa;  # Critical files that should not change
-SEC_BIN = $(SEC_READONLY);  # Binaries that should not change
-SEC_Log = $(SEC_GROWING); File grows but it shouldnt change owndership
-SEC_DYNAMICCONFIG = $(SEC_DYNAMIC);  # Config files that are changed infrequently, but are accessed often
-
+# Critical files that should not change
+SEC_CRIT = $(SEC_IGNORE_NONE)-SHa;
+# Binaries that should not change
+SEC_BIN = $(SEC_READONLY);
+# File grows but it shouldnt change owndership
+SEC_LOG = $(SEC_GROWING);
+# config files accessed often but changed infrequently
+SEC_CONFIG = $(SEC_DYNAMIC) ;
 
 # Named our rule
-(rulename = "Critical File and Dir Monitoring", Severity: 100)
+(rulename = "Critical File and Dir Monitoring", severity = 100)
 {
     # Monitoring our passwd and shadow files
     /etc/shadow -> $(SEC_READONLY) ;
@@ -59,9 +62,7 @@ SEC_DYNAMICCONFIG = $(SEC_DYNAMIC);  # Config files that are changed infrequentl
 
 
 # Tripwire Binaries
-(
-  rulename = "Tripwire Binaries",
-)
+(rulename = "Tripwire Binaries", severity = 100)
 {
   $(TWBIN)/siggen                      -> $(SEC_READONLY) ;
   $(TWBIN)/tripwire                    -> $(SEC_READONLY) ;
@@ -70,9 +71,7 @@ SEC_DYNAMICCONFIG = $(SEC_DYNAMIC);  # Config files that are changed infrequentl
 }
 
 # Tripwire Data Files - Configuration Files, Policy Files, Keys, Reports, Databases
-(
-  rulename = "Tripwire Data Files",
-)
+(rulename = "Tripwire Data Files", severity = 100)
 {
   # NOTE: We remove the inode attribute because when Tripwire creates a backup,
   # it does so by renaming the old file and creating a new one (which will
