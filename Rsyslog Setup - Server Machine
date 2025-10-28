@@ -1,0 +1,31 @@
+# Install and enable the service
+sudo apt install rsyslog
+sudo systemctl enable rsyslog
+
+#Enable reception of remote logs in config file /etc/rsyslog.conf ------------------
+
+#Uncomment these lines in the config file
+module(load="imtcp")
+input(type="imtcp" port="514")
+
+#End of /etc/rsyslog.conf file editing --------------------------------------------------------
+
+# Create another config file @ /etc/rsyslog.d/01-centralized.conf -- throw this line in there and save
+$template RemoteLogs,"/var/log/remote/%HOSTNAME%/%PROGRAMNAME%.log"
+*.* ?RemoteLogs
+& stop
+# End of /etc/rsyslog.d/01-centralized.conf
+
+# Create the location where our remote logs are gonna be stored
+sudo mkdir -p /var/log/remote
+
+# Change ownership from root to syslog and the adm group
+sudo chown syslog:adm /var/log/remote
+
+#Restart the rsyslog service to apply changes
+sudo systemctl restart rsyslog
+
+# Poke a hole thru the firewall to allow remote logging
+sudo ufw allow 514
+
+# Don't have time to implement TLS ToT - but that is one thing to learn for next competition
