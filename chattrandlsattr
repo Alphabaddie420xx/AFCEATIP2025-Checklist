@@ -1,0 +1,23 @@
+# find files with the immutable attribute
+
+# View attributes of files in a directory
+lsattr -a
+
+# How to make file immutable
+chattr +i filename.txt
+  
+# How to undo that
+chattr -i filename.txt
+
+# Files to make immutable -- AFTER you do what you need to do before.
+/etc/passwd
+/etc/shadow
+/etc/~shadow <- test that in a vm before comp.
+/etc/resolv.conf
+/etc/hosts
+/etc/tripwire configuration files and policy files
+ 
+# Can ask others where their service configuration files are located so we can add this to the list
+# Make sure that the config file you are making immutable is not dynamic tho… that would be a bad 🙁
+
+
