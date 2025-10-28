@@ -1,0 +1,19 @@
+# Basically this will be on every other competition box (at least for linux, I didn't learn it for windows :( )
+
+#Install and enable the service
+sudo apt install rsyslog
+sudo systemctl enable rsyslog
+
+#configure remote log forwarding -- point it to the SYSLOG SERVER ip, take out the <> too
+sudo nano /etc/rsyslog.conf
+#add this line in
+*.* @@<serverip>:514
+
+#restart the service
+sudo systemctl restart rsyslog
+
+#Verify our configuration
+logger -t tripwire "This is a tripwire test log"
+#hop on the rsyslog server machine, look in the /var/log/remote directory
+#cd into the hostname of the client machine (so the hostname of the machine being monitored)
+#WOWOWOW LOGS!!!!! :DDDDDDDDD
