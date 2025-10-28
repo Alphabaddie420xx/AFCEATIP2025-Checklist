@@ -2,6 +2,11 @@
 https://github.com/Alphabaddie420xx/UHWO-NCAE-RESOURCES/blob/main/MikroTik/Branden's%20Simple%20MikroTik%20Configuration.txt
 https://github.com/Alphabaddie420xx/UHWO-NCAE-RESOURCES/blob/main/MikroTik/v1.0%20Branden's%20Simple%20MikroTik%20Hardening%20Configuration.src
 
+# Additionally, drop incoming by default:
+/ip   firewall filter add   chain=input  action=log log-perfix= "Firewall Drop: " comment = "Log Unmatched" 
+/ip   firewall filter add   chain=input  action=drop comment  = "Drop Everything Else"
+
+
 # Go thru those. Add port forwarding rules thru the web interface as needed.
 <To do>
 # Lock down access to the management interface
