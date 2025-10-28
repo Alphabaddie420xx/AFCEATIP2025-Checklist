@@ -88,8 +88,6 @@ add chain=output comment="Section Break" disabled=yes
 /ip service set telnet disabled=yes
 /ip service set www disabled=no
 /ip service set winbox disabled=yes
-/ip service set telnet disabled=yes
-/ip service set api disabled=yes
 /ip service set api-ssl disabled=yes
 # /ip service set ssh disabled=yes   <- nevermind we should probably keep this on enabled so that we can get back in.
 
