@@ -1,0 +1,29 @@
+# install bind9 or named if it is not already on the system
+sudo apt install named
+OR
+sudo apt install bind9
+
+# Configuration files on ubuntu located in /etc/bind
+# Edit the default-zones file: Named.conf.default-zones
+Reference the Configure Zones tab in this DNS folder!!
+
+# Create the zones directory that we specified (or just go to the directory that our zone files are located if they are preconfigured)
+sudo mkdir zones
+# copy template file in there -- again, dont have to do this if there are alr files there
+cp /etc/bind/db.empty /etc/bind/zones/nameofzonefile
+
+# Modify the zone files -- reference the zone file examples in this folder for help
+
+# DO NOT FORGET TO INCREMENT SERIAL NUMBER
+
+# Add nameserver ip to /etc/resolv.conf -- even on the DNS server box itself.
+# Do this for all the linux machines on the network. Going to have to as google for how to get windows in on it.
+
+# Restart the service
+sudo systemctl restart named
+OR 
+sudo systemctl restart bind9
+
+
+#Implementing DNSSEC
+- Gonna do this later...
