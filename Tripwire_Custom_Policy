@@ -1,0 +1,95 @@
+Tripwire policy creation guide: https://github.com/Tripwire/tripwire-open-source/blob/master/policy/policyguide.txt
+
+#custom made ruleset made by me :3
+
+#Okay going to test and troubleshoot basic script
+
+#I think these are defined when tripwire is installed, don't need to configure these...maybe. Need to test.
+#@@section GLOBAL
+#TWROOT=;
+#TWBIN=;
+#TWPOL=;
+#TWDB=;
+#TWSKEY=;
+#TWLKEY=;
+#TWREPORT=;
+#HOSTNAME=;
+
+@@section FS
+SEC_DEVICE        = +pugsdr-intlbamcCMSH ;
+SEC_DYNAMIC       = +pinugtd-srlbamcCMSH ;
+SEC_GROWING       = +pinugtdl-srbamcCMSH ;
+SEC_IGNORE_ALL    = -pinugtsdrlbamcCMSH ;
+SEC_IGNORE_NONE   = +pinugtsdrbamcCMSH-l ;
+SEC_READONLY      = +pinugtsdbmCM-rlacSH ;
+SEC_TEMPORARY     = +pugt ;
+
+
+# Predefined variables - since i dun wanna write it out every time
+SEC_CRIT = $(SEC_IGNORE_NONE)-SHa;  # Critical files that should not change
+SEC_BIN = $(SEC_READONLY);  # Binaries that should not change
+SEC_Log = $(SEC_GROWING); File grows but it shouldnt change owndership
+SEC_DYNAMICCONFIG = $(SEC_DYNAMIC);  # Config files that are changed infrequently, but are accessed often
+
+
+# Named our rule
+(rulename = "Critical File and Dir Monitoring", Severity: 100)
+{
+    # Monitoring our passwd and shadow files
+    /etc/shadow -> $(SEC_READONLY) ;
+    /etc/passwd -> $(SEC_READONLY) ;
+
+    # monitoring our resolver files
+    /etc/resolv.conf  -> $(SEC_READONLY) ;
+    /etc/hosts  -> $(SEC_READONLY) ;
+    /etc/hosts.deny  -> $(SEC_READONLY) ;
+    /etc/hosts.allow  -> $(SEC_READONLY) ;
+
+    # monitoring for any changes to the binaries:
+    /usr/sbin  -> $(SEC_BIN) ;
+    /usr/bin  -> $(SEC_BIN) ;
+}
+
+
+(rulename = "Login Scripts", severity = 100)
+{
+  /etc/bashrc                          -> $(SEC_CONFIG) ;
+  /etc/profile                         -> $(SEC_CONFIG) ;
+}
+
+
+# Tripwire Binaries
+(
+  rulename = "Tripwire Binaries",
+)
+{
+  $(TWBIN)/siggen                      -> $(SEC_READONLY) ;
+  $(TWBIN)/tripwire                    -> $(SEC_READONLY) ;
+  $(TWBIN)/twadmin                     -> $(SEC_READONLY) ;
+  $(TWBIN)/twprint                     -> $(SEC_READONLY) ;
+}
+
+# Tripwire Data Files - Configuration Files, Policy Files, Keys, Reports, Databases
+(
+  rulename = "Tripwire Data Files",
+)
+{
+  # NOTE: We remove the inode attribute because when Tripwire creates a backup,
+  # it does so by renaming the old file and creating a new one (which will
+  # have a new inode number).  Inode is left turned on for keys, which shouldn't
+  # ever change.
+
+  # NOTE: The first integrity check triggers this rule and each integrity check
+  # afterward triggers this rule until a database update is run, since the
+  # database file does not exist before that point.
+
+  $(TWDB)                              -> $(SEC_DYNAMIC) -i ;
+  $(TWPOL)/tw.pol                      -> $(SEC_READONLY) -i ;
+  $(TWPOL)/tw.cfg                      -> $(SEC_READONLY) -i ;
+  $(TWLKEY)/$(HOSTNAME)-local.key      -> $(SEC_READONLY) ;
+  $(TWSKEY)/site.key                   -> $(SEC_READONLY) ;
+
+  # don't scan the individual reports
+  $(TWREPORT)                          -> $(SEC_DYNAMIC) (recurse=0) ;
+}
+
